@@ -11,6 +11,36 @@ When interacting with GitHub (issues, pull requests, labels, repo metadata), **a
 
 Before calling an MCP tool, read its schema descriptor under `mcps/user-github/tools/`.
 
+## Start every task on a new branch
+
+When beginning work on a GitHub issue / task:
+
+1. Ensure `main` is up to date (`git fetch origin`).
+2. Create a **new branch** from `main` before writing code.
+3. Branch name format: `task-XX-<short-kebab-summary>` (e.g. `task-02-license-readme`).
+
+Do not implement task work directly on `main`.
+
+## Finish every task with commit, push, and PR
+
+When implementation is complete:
+
+1. **Commit** all relevant changes with a clear message focused on why.
+2. **Push** the branch to `origin`.
+3. **Create a PR** via GitHub MCP (`create_pull_request`) targeting `main`.
+
+Do not leave finished work uncommitted or unpushed. Do not ask the user to create the PR unless blocked (e.g. auth failure).
+
+## Never merge pull requests
+
+**Only the user may merge PRs.** Agents must not:
+
+- Merge PRs via GitHub MCP, `gh`, or git
+- Enable auto-merge
+- Squash-merge or rebase-merge on the user's behalf
+
+After creating a PR, stop and let the user review and merge.
+
 ## Pull requests must close the task issue
 
 Every PR must link to the corresponding GitHub issue so it **auto-closes on merge**. Include one of these keywords in the PR body:
