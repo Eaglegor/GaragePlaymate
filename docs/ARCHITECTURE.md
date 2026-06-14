@@ -436,7 +436,7 @@ Changing takes mid-playback requires Stop → Play (FR-RAND-02).
 | Song metadata | yaml-cpp |
 | Persistence | SQLite (amalgamation or FetchContent) |
 | Tests | Catch2 for `src/core/` and parser tests |
-| Build | CMake 3.22+, MSVC 2022, x64 |
+| Build | CMake 3.22+, MSVC 2026 (Visual Studio 2026), x64 |
 | License | GPL-3.0 |
 
 ### CMake options
