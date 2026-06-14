@@ -1,0 +1,52 @@
+GaragePlaymate — Third-Party Notices
+====================================
+
+This file lists third-party software used by or bundled with GaragePlaymate.
+See LICENSE for the GaragePlaymate project license (GPL-3.0).
+
+JUCE Framework
+--------------
+Copyright (c) Raw Material Software Limited and JUCE contributors.
+
+JUCE is dual-licensed under the GNU General Public License v3.0 and a
+commercial license. GaragePlaymate is distributed under GPL-3.0 and uses
+JUCE under the GPL path. JUCE is fetched at build time via CMake FetchContent.
+
+  https://juce.com/
+  https://github.com/juce-framework/JUCE
+
+Steinberg ASIO SDK
+------------------
+Copyright (c) Steinberg Media Technologies GmbH.
+
+The Steinberg ASIO SDK is used when GaragePlaymate is built with
+`GARAGEPLAYMATE_ENABLE_ASIO=ON` (the default). It is not redistributed with
+this repository. Developers must download the SDK from Steinberg and accept
+Steinberg's license terms before enabling ASIO support.
+
+  https://www.steinberg.net/asiosdk
+
+yaml-cpp
+--------
+Copyright (c) Jesse B. Bitter and yaml-cpp contributors.
+
+Licensed under the MIT License. yaml-cpp will be integrated in a later task
+for parsing song manifest files.
+
+  https://github.com/jbeder/yaml-cpp
+
+SQLite
+------
+SQLite is in the public domain. SQLite will be integrated in a later task
+for application metadata (setlists, settings, session history).
+
+  https://sqlite.org/
+
+Catch2
+------
+Copyright (c) Catch2 contributors.
+
+Licensed under the Boost Software License 1.0 (BSL-1.0). Catch2 will be used
+for unit tests in a later task.
+
+  https://github.com/catchorg/Catch2
