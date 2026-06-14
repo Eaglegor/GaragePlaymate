@@ -1,5 +1,7 @@
 # GaragePlaymate
 
+> **Under development.** GaragePlaymate is not yet ready for end users. The repository currently contains an early CMake/JUCE scaffold; features described in the product docs are planned but not implemented.
+
 GaragePlaymate is a Windows desktop multitrack practice player for recreational band members. Each playback session randomly selects one pre-recorded take per instrument, optionally simulates a technical failure (a track drops until the next song section), and records playback history for replay. See [docs/PRODUCT_DESIGN.md](docs/PRODUCT_DESIGN.md) for the full product specification and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for system design and implementation guidance.
 
 **License:** [GPL-3.0](LICENSE). Third-party attributions: [NOTICE](NOTICE).
