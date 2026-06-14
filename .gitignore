@@ -1,0 +1,8 @@
+build/
+out/
+.vs/
+CMakeUserPresets.json
+
+# Steinberg ASIO SDK — download locally after accepting Steinberg's license.
+# See README (#2) or cmake/AsioSdk.cmake for setup.
+third_party/asio-sdk/

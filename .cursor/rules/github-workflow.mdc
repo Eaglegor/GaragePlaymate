@@ -1,0 +1,108 @@
+---
+description: GitHub MCP workflow for issues, PRs, and auto-closing tasks
+alwaysApply: true
+---
+
+# GitHub Workflow
+
+## Use GitHub MCP
+
+When interacting with GitHub (issues, pull requests, labels, repo metadata), **always use the GitHub MCP** (`user-github` server). Do not use the `gh` CLI unless MCP is unavailable or the user explicitly requests the CLI.
+
+Before calling an MCP tool, read its schema descriptor under `mcps/user-github/tools/`.
+
+## Start every task on a new branch
+
+When beginning work on a GitHub issue / task:
+
+1. Ensure `main` is up to date (`git fetch origin`).
+2. Create a **new branch** from `main` before writing code.
+3. Branch name format: `task-XX-<short-kebab-summary>` (e.g. `task-02-license-readme`).
+
+Do not implement task work directly on `main`.
+
+## Finish every task with commit, push, and PR
+
+When implementation is complete:
+
+1. **Commit** all relevant changes with a clear message focused on why.
+2. **Push** the branch to `origin`.
+3. **Create a PR** via GitHub MCP (`create_pull_request`) targeting `main`.
+
+Do not leave finished work uncommitted or unpushed. Do not ask the user to create the PR unless blocked (e.g. auth failure).
+
+## Never merge pull requests
+
+**Only the user may merge PRs.** Agents must not:
+
+- Merge PRs via GitHub MCP, `gh`, or git
+- Enable auto-merge
+- Squash-merge or rebase-merge on the user's behalf
+
+After creating a PR, stop and let the user review and merge.
+
+## Pull requests must close the task issue
+
+Every PR must link to the corresponding GitHub issue so it **auto-closes on merge**. Include one of these keywords in the PR body:
+
+```
+Closes #N
+```
+
+Use the issue number from the repo (search by title `TASK-XX:` if needed). Issue mapping for early tasks:
+
+| Task | Issue |
+|------|-------|
+| TASK-01 | #3 |
+| TASK-02 | #2 |
+| TASK-03 | #1 |
+| TASK-04 … TASK-33 | same number as task (e.g. TASK-05 → #5) |
+
+PR title format: `TASK-XX: <short summary>`.
+
+## Pull requests must disclose AI authorship
+
+Every PR body created by an agent must start with a **large, prominent** AI disclosure before any other content. Use a top-level heading (GitHub renders `#` as large text):
+
+```markdown
+# 🤖 AI Agent Generated Code
+
+This pull request was created by an AI coding agent. Please review carefully before merging.
+```
+
+Do not omit this block. It must be the first lines of the PR description.
+
+## Pull requests must include a test plan
+
+Every PR body must include a **## Test plan** section describing how changes were verified. Use checkboxes:
+
+```markdown
+## Test plan
+
+- [x] Step taken to verify (command run, manual check, etc.)
+- [ ] Step not yet verified (only if blocked; explain why)
+```
+
+Run relevant commands when possible (build, tests, manual smoke test) and record what was actually executed—not generic placeholders.
+
+## PR body template
+
+```markdown
+# 🤖 AI Agent Generated Code
+
+This pull request was created by an AI coding agent. Please review carefully before merging.
+
+## Summary
+
+- Bullet summary of changes
+
+## Task
+
+Implements [#N — TASK-XX: …](https://github.com/Eaglegor/GaragePlaymate/issues/N).
+
+Closes #N
+
+## Test plan
+
+- [x] ...
+```
