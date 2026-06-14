@@ -60,6 +60,18 @@ Use the issue number from the repo (search by title `TASK-XX:` if needed). Issue
 
 PR title format: `TASK-XX: <short summary>`.
 
+## Pull requests must disclose AI authorship
+
+Every PR body created by an agent must start with a **large, prominent** AI disclosure before any other content. Use a top-level heading (GitHub renders `#` as large text):
+
+```markdown
+# 🤖 AI Agent Generated Code
+
+This pull request was created by an AI coding agent. Please review carefully before merging.
+```
+
+Do not omit this block. It must be the first lines of the PR description.
+
 ## Pull requests must include a test plan
 
 Every PR body must include a **## Test plan** section describing how changes were verified. Use checkboxes:
@@ -76,6 +88,10 @@ Run relevant commands when possible (build, tests, manual smoke test) and record
 ## PR body template
 
 ```markdown
+# 🤖 AI Agent Generated Code
+
+This pull request was created by an AI coding agent. Please review carefully before merging.
+
 ## Summary
 
 - Bullet summary of changes
