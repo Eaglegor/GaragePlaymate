@@ -1,7 +1,7 @@
 # GaragePlaymate — Architecture Reference
 
 **Version:** v1.0 (Windows desktop)  
-**Audience:** Development agents implementing tasks in [docs/tasks/](tasks/)  
+**Audience:** Development agents implementing tasks tracked as [GitHub issues](https://github.com/Eaglegor/GaragePlaymate/issues) ([task index](tasks/README.md))  
 **Product spec:** [PRODUCT_DESIGN.md](PRODUCT_DESIGN.md)
 
 This document is the **shared context** for all implementation tasks. Read it before starting any task.
@@ -69,7 +69,7 @@ GaragePlaymate/
 ├── docs/
 │   ├── PRODUCT_DESIGN.md
 │   ├── ARCHITECTURE.md                # this file
-│   └── tasks/                         # agent task definitions
+│   └── tasks/                         # task index → GitHub issues
 ├── src/
 │   ├── main.cpp
 │   ├── app/
@@ -476,43 +476,43 @@ option(GARAGEPLAYMATE_BUILD_TESTS "Build unit tests" ON)
 
 ## 17. Task index
 
-Run tasks in numeric order. Each task file in [docs/tasks/](tasks/) references this document.
+Run tasks in numeric order. Each task is a [GitHub issue](https://github.com/Eaglegor/GaragePlaymate/issues); see [docs/tasks/README.md](tasks/README.md) for issue numbers and batches.
 
-| Task | Summary |
-|------|---------|
-| TASK_01 | CMake + JUCE scaffold |
-| TASK_02 | LICENSE, NOTICE, README |
-| TASK_03 | Application shell |
-| TASK_04 | Core domain types |
-| TASK_05 | Song YAML parser |
-| TASK_06 | Song folder scanner |
-| TASK_07 | SQLite schema + store |
-| TASK_08 | Data path resolver |
-| TASK_09 | Audio device service |
-| TASK_10 | Streaming track source |
-| TASK_11 | Preloaded track source |
-| TASK_12 | Multitrack mixer engine |
-| TASK_13 | Transport controller |
-| TASK_14 | Section navigator |
-| TASK_15 | Section seek integration |
-| TASK_16 | Random take selector |
-| TASK_17 | Session persistence |
-| TASK_18 | Playback service orchestration |
-| TASK_19 | Failure simulator core |
-| TASK_20 | Failure audio integration |
-| TASK_21 | Library service |
-| TASK_22 | Setlist CRUD |
-| TASK_23 | Settings service |
-| TASK_24 | Library UI |
-| TASK_25 | Song detail UI |
-| TASK_26 | Session bar UI |
-| TASK_27 | History panel UI |
-| TASK_28 | Settings UI |
-| TASK_29 | Keyboard shortcuts |
-| TASK_30 | Sample song fixtures |
-| TASK_31 | Core unit tests |
-| TASK_32 | Packaging (portable + installer) |
-| TASK_33 | Mute/solo (optional) |
+| Task | Issue | Summary |
+|------|-------|---------|
+| TASK-01 | [#3](https://github.com/Eaglegor/GaragePlaymate/issues/3) | CMake + JUCE scaffold |
+| TASK-02 | [#2](https://github.com/Eaglegor/GaragePlaymate/issues/2) | LICENSE, NOTICE, README |
+| TASK-03 | [#1](https://github.com/Eaglegor/GaragePlaymate/issues/1) | Application shell |
+| TASK-04 | [#4](https://github.com/Eaglegor/GaragePlaymate/issues/4) | Core domain types |
+| TASK-05 | [#5](https://github.com/Eaglegor/GaragePlaymate/issues/5) | Song YAML parser |
+| TASK-06 | [#6](https://github.com/Eaglegor/GaragePlaymate/issues/6) | Song folder scanner |
+| TASK-07 | [#7](https://github.com/Eaglegor/GaragePlaymate/issues/7) | SQLite schema + store |
+| TASK-08 | [#8](https://github.com/Eaglegor/GaragePlaymate/issues/8) | Data path resolver |
+| TASK-09 | [#9](https://github.com/Eaglegor/GaragePlaymate/issues/9) | Audio device service |
+| TASK-10 | [#10](https://github.com/Eaglegor/GaragePlaymate/issues/10) | Streaming track source |
+| TASK-11 | [#11](https://github.com/Eaglegor/GaragePlaymate/issues/11) | Preloaded track source |
+| TASK-12 | [#12](https://github.com/Eaglegor/GaragePlaymate/issues/12) | Multitrack mixer engine |
+| TASK-13 | [#13](https://github.com/Eaglegor/GaragePlaymate/issues/13) | Transport controller |
+| TASK-14 | [#14](https://github.com/Eaglegor/GaragePlaymate/issues/14) | Section navigator |
+| TASK-15 | [#15](https://github.com/Eaglegor/GaragePlaymate/issues/15) | Section seek integration |
+| TASK-16 | [#16](https://github.com/Eaglegor/GaragePlaymate/issues/16) | Random take selector |
+| TASK-17 | [#17](https://github.com/Eaglegor/GaragePlaymate/issues/17) | Session persistence |
+| TASK-18 | [#18](https://github.com/Eaglegor/GaragePlaymate/issues/18) | Playback service orchestration |
+| TASK-19 | [#19](https://github.com/Eaglegor/GaragePlaymate/issues/19) | Failure simulator core |
+| TASK-20 | [#20](https://github.com/Eaglegor/GaragePlaymate/issues/20) | Failure audio integration |
+| TASK-21 | [#21](https://github.com/Eaglegor/GaragePlaymate/issues/21) | Library service |
+| TASK-22 | [#22](https://github.com/Eaglegor/GaragePlaymate/issues/22) | Setlist CRUD |
+| TASK-23 | [#23](https://github.com/Eaglegor/GaragePlaymate/issues/23) | Settings service |
+| TASK-24 | [#24](https://github.com/Eaglegor/GaragePlaymate/issues/24) | Library UI |
+| TASK-25 | [#25](https://github.com/Eaglegor/GaragePlaymate/issues/25) | Song detail UI |
+| TASK-26 | [#26](https://github.com/Eaglegor/GaragePlaymate/issues/26) | Session bar UI |
+| TASK-27 | [#27](https://github.com/Eaglegor/GaragePlaymate/issues/27) | History panel UI |
+| TASK-28 | [#28](https://github.com/Eaglegor/GaragePlaymate/issues/28) | Settings UI |
+| TASK-29 | [#29](https://github.com/Eaglegor/GaragePlaymate/issues/29) | Keyboard shortcuts |
+| TASK-30 | [#30](https://github.com/Eaglegor/GaragePlaymate/issues/30) | Sample song fixtures |
+| TASK-31 | [#31](https://github.com/Eaglegor/GaragePlaymate/issues/31) | Core unit tests |
+| TASK-32 | [#32](https://github.com/Eaglegor/GaragePlaymate/issues/32) | Packaging (portable + installer) |
+| TASK-33 | [#33](https://github.com/Eaglegor/GaragePlaymate/issues/33) | Mute/solo (optional) |
 
 ---
 

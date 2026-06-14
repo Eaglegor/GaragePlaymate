@@ -27,7 +27,7 @@ juce_add_gui_app(GaragePlaymate
     NEEDS_MIDI_OUTPUT FALSE
 )
 
-# Stub main() until TASK_03 replaces it with START_JUCE_APPLICATION.
+# Stub main() until issue #1 (TASK-03) replaces it with START_JUCE_APPLICATION.
 set_target_properties(GaragePlaymate PROPERTIES WIN32_EXECUTABLE FALSE)
 
 target_sources(GaragePlaymate PRIVATE src/main.cpp)
