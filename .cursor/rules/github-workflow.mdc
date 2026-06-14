@@ -1,0 +1,62 @@
+---
+description: GitHub MCP workflow for issues, PRs, and auto-closing tasks
+alwaysApply: true
+---
+
+# GitHub Workflow
+
+## Use GitHub MCP
+
+When interacting with GitHub (issues, pull requests, labels, repo metadata), **always use the GitHub MCP** (`user-github` server). Do not use the `gh` CLI unless MCP is unavailable or the user explicitly requests the CLI.
+
+Before calling an MCP tool, read its schema descriptor under `mcps/user-github/tools/`.
+
+## Pull requests must close the task issue
+
+Every PR must link to the corresponding GitHub issue so it **auto-closes on merge**. Include one of these keywords in the PR body:
+
+```
+Closes #N
+```
+
+Use the issue number from the repo (search by title `TASK-XX:` if needed). Issue mapping for early tasks:
+
+| Task | Issue |
+|------|-------|
+| TASK-01 | #3 |
+| TASK-02 | #2 |
+| TASK-03 | #1 |
+| TASK-04 … TASK-33 | same number as task (e.g. TASK-05 → #5) |
+
+PR title format: `TASK-XX: <short summary>`.
+
+## Pull requests must include a test plan
+
+Every PR body must include a **## Test plan** section describing how changes were verified. Use checkboxes:
+
+```markdown
+## Test plan
+
+- [x] Step taken to verify (command run, manual check, etc.)
+- [ ] Step not yet verified (only if blocked; explain why)
+```
+
+Run relevant commands when possible (build, tests, manual smoke test) and record what was actually executed—not generic placeholders.
+
+## PR body template
+
+```markdown
+## Summary
+
+- Bullet summary of changes
+
+## Task
+
+Implements [TASK-XX](https://github.com/Eaglegor/GaragePlaymate/blob/main/docs/tasks/TASK_XX_....md).
+
+Closes #N
+
+## Test plan
+
+- [x] ...
+```
