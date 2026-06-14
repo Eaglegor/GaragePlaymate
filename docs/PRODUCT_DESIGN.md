@@ -300,7 +300,7 @@ No waveform editor, no take alignment UI in v1.
 | UI | JUCE native UI | Single framework; avoids Qt+ASIO glue |
 | Config/metadata | YAML via `yaml-cpp` or JSON via `nlohmann/json` | Human-editable song manifests |
 | Persistence | SQLite for setlists, settings, session history | Simple queries for history |
-| Build | CMake + MSVC 2022 | Windows standard |
+| Build | CMake + MSVC 2026 (Visual Studio 2026) | Windows standard |
 | Distribution | Portable ZIP + MSI/NSIS installer | Two packages, shared binary; different default data paths |
 
 **Why not pure Qt + ASIO:** Qt excels at UI but has no mature built-in ASIO multitrack engine; you would still embed RtAudio/JUCE/PortAudio for playback, increasing integration risk.

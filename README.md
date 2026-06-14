@@ -7,7 +7,7 @@ GaragePlaymate is a Windows desktop multitrack practice player for recreational 
 ## Prerequisites
 
 - Windows 10 or 11 (x64)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) with the **Desktop development with C++** workload
+- [Visual Studio 2026](https://visualstudio.microsoft.com/) with the **Desktop development with C++** workload
 - [CMake](https://cmake.org/download/) 3.22 or newer
 - Git (for CMake to fetch JUCE)
 - **Optional (ASIO builds):** [Steinberg ASIO SDK](https://www.steinberg.net/asiosdk) — license acceptance required. Set `GARAGEPLAYMATE_ASIO_SDK_PATH`, the `ASIO_SDK_PATH` environment variable, or extract the SDK to `third_party/asio-sdk/`. Use `-DGARAGEPLAYMATE_ENABLE_ASIO=OFF` for WASAPI-only builds without the SDK.
@@ -17,7 +17,7 @@ GaragePlaymate is a Windows desktop multitrack practice player for recreational 
 From the repository root:
 
 ```powershell
-cmake -B build -G "Visual Studio 17 2022" -A x64
+cmake -B build -G "Visual Studio 18 2026" -A x64
 cmake --build build --config Release
 ```
 
@@ -40,7 +40,7 @@ Other configurations use the same layout, for example `build/bin/Debug/GaragePla
 Example — portable, WASAPI-only configure:
 
 ```powershell
-cmake -B build -G "Visual Studio 17 2022" -A x64 `
+cmake -B build -G "Visual Studio 18 2026" -A x64 `
   -DGARAGEPLAYMATE_PORTABLE_BUILD=ON `
   -DGARAGEPLAYMATE_ENABLE_ASIO=OFF
 cmake --build build --config Release
