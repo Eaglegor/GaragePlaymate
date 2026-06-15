@@ -20,13 +20,16 @@ struct FailureEvent {
     std::string trackId;
     int64_t onsetMs = 0;
     int64_t restoreMs = 0;
-    std::variant<VolumeDropFailure> type;
+    std::variant<VolumeDropFailure> eventData;
+};
+
+struct PlaybackTransport {
+    int64_t currentTimestamp = 0;
 };
 
 struct PlaybackSession {
     int64_t id = 0;
     std::string songId;
-    int64_t timestampUnixMs = 0;
     std::map<std::string, std::shared_ptr<TakeFile>> takeMap;
     std::vector<FailureEvent> failureEvents;
 
