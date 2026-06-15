@@ -1,0 +1,13 @@
+title: Valid Test Song
+bpm: 120
+timeSignature: [4, 4]
+sections:
+  - id: chorus
+    name: Chorus
+    startMs: 30000
+  - id: intro
+    name: Intro
+    startMs: 0
+  - id: verse
+    name: Verse 1
+    startMs: 15000
