@@ -63,11 +63,11 @@ TEST_CASE("parseSongYaml accepts a valid manifest", "[song_yaml_parser]") {
     CHECK(song.sections[2].startMs == 30000);
 }
 
-TEST_CASE("parseSongYaml rejects a manifest without id", "[song_yaml_parser]") {
-    const auto songFolder = fixturesRoot() / "missing-id";
+TEST_CASE("parseSongYaml rejects a manifest without title", "[song_yaml_parser]") {
+    const auto songFolder = fixturesRoot() / "missing-title";
 
-    REQUIRE_THROWS_AS(garageplaymate::parseSongYaml(songYamlPath(songFolder), songFolder),
-                      garageplaymate::ParseError);
+    REQUIRE_THROWS_WITH(garageplaymate::parseSongYaml(songYamlPath(songFolder), songFolder),
+                        Catch::Matchers::ContainsSubstring("title"));
 }
 
 TEST_CASE("parseSongYaml rejects duplicate section ids", "[song_yaml_parser]") {

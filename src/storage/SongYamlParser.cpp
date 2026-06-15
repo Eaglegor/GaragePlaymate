@@ -109,7 +109,7 @@ TrackDef parseTrackYaml(const std::filesystem::path& trackYamlPath,
     }
 
     TrackDef track;
-    track.id = requireScalar(root, "id");
+    track.id = trackFolderPath.filename().string();
     track.name = requireScalar(root, "name");
     if (auto volume = tryAsScalar<float>(root["defaultVolume"], "defaultVolume")) {
         track.defaultVolume = volume.value();
@@ -124,7 +124,6 @@ void discoverTracks(const std::filesystem::path& songFolderPath, Song& song) {
         throwParseError("Missing tracks directory: " + tracksRoot.string());
     }
 
-    std::unordered_set<std::string> seenIds;
     std::vector<TrackDef> tracks;
 
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(tracksRoot)) {
@@ -137,11 +136,7 @@ void discoverTracks(const std::filesystem::path& songFolderPath, Song& song) {
             continue;
         }
 
-        TrackDef track = parseTrackYaml(trackYamlPath, entry.path());
-        if (!seenIds.insert(track.id).second) {
-            throwParseError("Duplicate track id: " + track.id);
-        }
-        tracks.push_back(std::move(track));
+        tracks.push_back(parseTrackYaml(trackYamlPath, entry.path()));
     }
 
     if (tracks.empty()) {
@@ -197,7 +192,7 @@ Song parseSongYaml(const std::filesystem::path& songYamlPath,
 
     Song song;
     song.folderPath = songYamlPath.parent_path();
-    song.id = requireScalar(root, "id");
+    song.id = songFolderPath.filename().string();
     song.title = requireScalar(root, "title");
 
     if (auto bpm = tryAsScalar<int>(root["bpm"], "bpm")) {
