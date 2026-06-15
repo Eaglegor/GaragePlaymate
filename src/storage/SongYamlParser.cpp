@@ -3,6 +3,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -66,16 +67,16 @@ std::optional<T> tryAsScalar(const YAML::Node& node, const char* fieldName) {
     }
 }
 
-YAML::Node loadYamlFile(const std::filesystem::path& songYamlPath) {
-    std::ifstream input(songYamlPath);
+YAML::Node loadYamlFile(const std::filesystem::path& yamlPath) {
+    std::ifstream input(yamlPath);
     if (!input.is_open()) {
-        throwParseError("Failed to open song.yaml: " + songYamlPath.string());
+        throwParseError("Failed to open YAML file: " + yamlPath.string());
     }
 
     try {
         return YAML::Load(input);
     } catch (const YAML::Exception& exception) {
-        throwParseError(std::string("YAML parse error: ") + exception.what());
+        throwParseError(std::string("YAML parse error in ") + yamlPath.string() + ": " + exception.what());
     }
 }
 
@@ -100,39 +101,56 @@ void parseTimeSignature(const YAML::Node& root, Song& song) {
     }
 }
 
-void parseTracks(const YAML::Node& root, const std::filesystem::path& songFolderPath, Song& song) {
-    const YAML::Node tracksNode = root["tracks"];
-    if (!tracksNode) {
-        throwParseError("Missing required field 'tracks'");
+TrackDef parseTrackYaml(const std::filesystem::path& trackYamlPath,
+                        const std::filesystem::path& trackFolderPath) {
+    const YAML::Node root = loadYamlFile(trackYamlPath);
+    if (!root.IsMap()) {
+        throwParseError(trackYamlPath.string() + ": root must be a mapping");
     }
-    if (!tracksNode.IsSequence() || tracksNode.size() == 0) {
-        throwParseError("Field 'tracks' must be a non-empty sequence");
+
+    TrackDef track;
+    track.id = requireScalar(root, "id");
+    track.name = requireScalar(root, "name");
+    if (auto volume = tryAsScalar<float>(root["defaultVolume"], "defaultVolume")) {
+        track.defaultVolume = volume.value();
+    }
+    track.folderPath = trackFolderPath;
+    return track;
+}
+
+void discoverTracks(const std::filesystem::path& songFolderPath, Song& song) {
+    const std::filesystem::path tracksRoot = songFolderPath / "tracks";
+    if (!std::filesystem::is_directory(tracksRoot)) {
+        throwParseError("Missing tracks directory: " + tracksRoot.string());
     }
 
     std::unordered_set<std::string> seenIds;
+    std::vector<TrackDef> tracks;
 
-    for (std::size_t index = 0; index < tracksNode.size(); ++index) {
-        const YAML::Node trackNode = tracksNode[index];
-        if (!trackNode.IsMap()) {
-            throwParseError("Each track entry must be a mapping");
+    for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(tracksRoot)) {
+        if (!entry.is_directory()) {
+            continue;
         }
 
-        TrackDef track;
-        track.id = requireScalar(trackNode, "id");
-        track.name = requireScalar(trackNode, "name");
-        const std::string folderRelative = requireScalar(trackNode, "folder");
+        const std::filesystem::path trackYamlPath = entry.path() / "track.yaml";
+        if (!std::filesystem::is_regular_file(trackYamlPath)) {
+            continue;
+        }
 
+        TrackDef track = parseTrackYaml(trackYamlPath, entry.path());
         if (!seenIds.insert(track.id).second) {
             throwParseError("Duplicate track id: " + track.id);
         }
-
-        if (auto volume = tryAsScalar<float>(trackNode["defaultVolume"], "defaultVolume")) {
-            track.defaultVolume = *volume;
-        }
-
-        track.folderPath = songFolderPath / folderRelative;
-        song.tracks.push_back(std::move(track));
+        tracks.push_back(std::move(track));
     }
+
+    if (tracks.empty()) {
+        throwParseError("No tracks found under " + tracksRoot.string());
+    }
+
+    std::sort(tracks.begin(), tracks.end(),
+              [](const TrackDef& left, const TrackDef& right) { return left.id < right.id; });
+    song.tracks = std::move(tracks);
 }
 
 void parseSections(const YAML::Node& root, Song& song) {
@@ -183,15 +201,15 @@ Song parseSongYaml(const std::filesystem::path& songYamlPath,
     song.title = requireScalar(root, "title");
 
     if (auto bpm = tryAsScalar<int>(root["bpm"], "bpm")) {
-        if (*bpm > 0) {
-            song.bpm = *bpm;
+        if (bpm.value() > 0) {
+            song.bpm = bpm.value();
         } else {
             logWarning("Field 'bpm' must be positive; ignoring");
         }
     }
 
     parseTimeSignature(root, song);
-    parseTracks(root, songFolderPath, song);
+    discoverTracks(songFolderPath, song);
     parseSections(root, song);
 
     return song;

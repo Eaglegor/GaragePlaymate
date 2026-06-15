@@ -1,9 +1,5 @@
 id: duplicate-section
 title: Duplicate Section Song
-tracks:
-  - id: drums
-    name: Drums
-    folder: tracks/drums
 sections:
   - id: intro
     name: Intro

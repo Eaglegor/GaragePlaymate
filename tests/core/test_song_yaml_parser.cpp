@@ -15,6 +15,15 @@ std::filesystem::path songYamlPath(const std::filesystem::path& songFolder) {
     return songFolder / "song.yaml";
 }
 
+const garageplaymate::TrackDef* findTrack(const garageplaymate::Song& song, const std::string& id) {
+    for (const garageplaymate::TrackDef& track : song.tracks) {
+        if (track.id == id) {
+            return &track;
+        }
+    }
+    return nullptr;
+}
+
 }  // namespace
 
 TEST_CASE("parseSongYaml accepts a valid manifest", "[song_yaml_parser]") {
@@ -25,21 +34,25 @@ TEST_CASE("parseSongYaml accepts a valid manifest", "[song_yaml_parser]") {
     CHECK(song.id == "valid-song");
     CHECK(song.title == "Valid Test Song");
     CHECK(song.bpm.has_value());
-    CHECK(*song.bpm == 120);
+    CHECK(song.bpm.value() == 120);
     REQUIRE(song.timeSignature.has_value());
     CHECK(song.timeSignature->first == 4);
     CHECK(song.timeSignature->second == 4);
     CHECK(song.folderPath == songFolder);
 
     REQUIRE(song.tracks.size() == 2);
-    CHECK(song.tracks[0].id == "drums");
-    CHECK(song.tracks[0].name == "Drums");
-    CHECK(song.tracks[0].folderPath == songFolder / "tracks/drums");
-    CHECK(song.tracks[0].defaultVolume == 1.0f);
-    CHECK(song.tracks[1].id == "bass");
-    CHECK(song.tracks[1].name == "Bass");
-    CHECK(song.tracks[1].folderPath == songFolder / "tracks/bass");
-    CHECK(song.tracks[1].defaultVolume == 0.8f);
+
+    const garageplaymate::TrackDef* drums = findTrack(song, "drums");
+    REQUIRE(drums != nullptr);
+    CHECK(drums->name == "Drums");
+    CHECK(drums->folderPath == songFolder / "tracks/drums");
+    CHECK(drums->defaultVolume == 1.0f);
+
+    const garageplaymate::TrackDef* bass = findTrack(song, "bass");
+    REQUIRE(bass != nullptr);
+    CHECK(bass->name == "Bass");
+    CHECK(bass->folderPath == songFolder / "tracks/bass");
+    CHECK(bass->defaultVolume == 0.8f);
 
     REQUIRE(song.sections.size() == 3);
     CHECK(song.sections[0].id == "intro");
