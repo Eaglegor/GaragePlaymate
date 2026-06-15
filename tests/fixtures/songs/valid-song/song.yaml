@@ -1,0 +1,23 @@
+id: valid-song
+title: Valid Test Song
+bpm: 120
+timeSignature: [4, 4]
+tracks:
+  - id: drums
+    name: Drums
+    folder: tracks/drums
+    defaultVolume: 1.0
+  - id: bass
+    name: Bass
+    folder: tracks/bass
+    defaultVolume: 0.8
+sections:
+  - id: chorus
+    name: Chorus
+    startMs: 30000
+  - id: intro
+    name: Intro
+    startMs: 0
+  - id: verse
+    name: Verse 1
+    startMs: 15000

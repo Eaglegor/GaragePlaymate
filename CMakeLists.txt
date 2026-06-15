@@ -18,11 +18,23 @@ foreach(config IN ITEMS Debug Release RelWithDebInfo MinSizeRel)
 endforeach()
 
 include(cmake/FetchJuce.cmake)
+include(cmake/FetchYamlCpp.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
 add_library(GaragePlaymateCore INTERFACE)
 target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+add_library(GaragePlaymateStorage STATIC
+    src/storage/SongYamlParser.cpp
+)
+target_compile_features(GaragePlaymateStorage PUBLIC cxx_std_23)
+target_link_libraries(GaragePlaymateStorage
+    PUBLIC
+        GaragePlaymateCore
+        yaml-cpp
+)
+garageplaymate_apply_warning_flags(GaragePlaymateStorage)
 
 juce_add_gui_app(GaragePlaymate
     PRODUCT_NAME "GaragePlaymate"
@@ -66,3 +78,9 @@ target_compile_definitions(GaragePlaymate
 )
 
 garageplaymate_configure_asio(GaragePlaymate)
+
+if(GARAGEPLAYMATE_BUILD_TESTS)
+    include(cmake/FetchCatch2.cmake)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
