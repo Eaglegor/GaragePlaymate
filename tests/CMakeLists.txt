@@ -1,5 +1,6 @@
 add_executable(GaragePlaymateTests
     core/test_song_yaml_parser.cpp
+    core/test_song_folder_scanner.cpp
 )
 
 target_compile_features(GaragePlaymateTests PRIVATE cxx_std_20)

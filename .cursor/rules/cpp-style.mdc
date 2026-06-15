@@ -1,0 +1,25 @@
+---
+description: C++ coding style guidance for GaragePlaymate
+globs: **/*.{h,hpp,cpp}
+alwaysApply: false
+---
+
+# C++ Style
+
+## Optional access
+
+After checking `optional.has_value()`, use `.value()` to read the contents. Do not use `*` or `->`.
+
+```cpp
+// BAD
+if (metadata.has_value()) {
+    take.durationMs = metadata->durationMs;
+}
+
+// GOOD
+if (metadata.has_value()) {
+    take.durationMs = metadata.value().durationMs;
+}
+```
+
+Additional style rules may be added here over time.
