@@ -1,7 +1,7 @@
 # GaragePlaymate — Architecture Reference
 
 **Version:** v1.0 (Windows desktop)  
-**Audience:** Development agents implementing tasks tracked as [GitHub issues](https://github.com/Eaglegor/GaragePlaymate/issues) ([task index](tasks/README.md))  
+**Audience:** Development agents implementing tasks in [docs/tasks/](tasks/) ([task index](tasks/README.md); [GitHub issues](https://github.com/Eaglegor/GaragePlaymate/issues) for tracking)  
 **Product spec:** [PRODUCT_DESIGN.md](PRODUCT_DESIGN.md)
 
 This document is the **shared context** for all implementation tasks. Read it before starting any task.
@@ -69,7 +69,7 @@ GaragePlaymate/
 ├── docs/
 │   ├── PRODUCT_DESIGN.md
 │   ├── ARCHITECTURE.md                # this file
-│   └── tasks/                         # task index → GitHub issues
+│   └── tasks/                         # agent task specifications + index
 ├── src/
 │   ├── main.cpp
 │   ├── app/
@@ -476,43 +476,43 @@ option(GARAGEPLAYMATE_BUILD_TESTS "Build unit tests" ON)
 
 ## 17. Task index
 
-Run tasks in numeric order. Each task is a [GitHub issue](https://github.com/Eaglegor/GaragePlaymate/issues); see [docs/tasks/README.md](tasks/README.md) for issue numbers and batches.
+Run tasks in numeric order. Each task has a specification file in [docs/tasks/](tasks/) and a linked [GitHub issue](https://github.com/Eaglegor/GaragePlaymate/issues); see [docs/tasks/README.md](tasks/README.md) for the full index.
 
-| Task | Issue | Summary |
-|------|-------|---------|
-| TASK-01 | [#3](https://github.com/Eaglegor/GaragePlaymate/issues/3) | CMake + JUCE scaffold |
-| TASK-02 | [#2](https://github.com/Eaglegor/GaragePlaymate/issues/2) | LICENSE, NOTICE, README |
-| TASK-03 | [#1](https://github.com/Eaglegor/GaragePlaymate/issues/1) | Application shell |
-| TASK-04 | [#4](https://github.com/Eaglegor/GaragePlaymate/issues/4) | Core domain types |
-| TASK-05 | [#5](https://github.com/Eaglegor/GaragePlaymate/issues/5) | Song YAML parser |
-| TASK-06 | [#6](https://github.com/Eaglegor/GaragePlaymate/issues/6) | Song folder scanner |
-| TASK-07 | [#7](https://github.com/Eaglegor/GaragePlaymate/issues/7) | SQLite schema + store |
-| TASK-08 | [#8](https://github.com/Eaglegor/GaragePlaymate/issues/8) | Data path resolver |
-| TASK-09 | [#9](https://github.com/Eaglegor/GaragePlaymate/issues/9) | Audio device service |
-| TASK-10 | [#10](https://github.com/Eaglegor/GaragePlaymate/issues/10) | Streaming track source |
-| TASK-11 | [#11](https://github.com/Eaglegor/GaragePlaymate/issues/11) | Preloaded track source |
-| TASK-12 | [#12](https://github.com/Eaglegor/GaragePlaymate/issues/12) | Multitrack mixer engine |
-| TASK-13 | [#13](https://github.com/Eaglegor/GaragePlaymate/issues/13) | Transport controller |
-| TASK-14 | [#14](https://github.com/Eaglegor/GaragePlaymate/issues/14) | Section navigator |
-| TASK-15 | [#15](https://github.com/Eaglegor/GaragePlaymate/issues/15) | Section seek integration |
-| TASK-16 | [#16](https://github.com/Eaglegor/GaragePlaymate/issues/16) | Random take selector |
-| TASK-17 | [#17](https://github.com/Eaglegor/GaragePlaymate/issues/17) | Session persistence |
-| TASK-18 | [#18](https://github.com/Eaglegor/GaragePlaymate/issues/18) | Playback service orchestration |
-| TASK-19 | [#19](https://github.com/Eaglegor/GaragePlaymate/issues/19) | Failure simulator core |
-| TASK-20 | [#20](https://github.com/Eaglegor/GaragePlaymate/issues/20) | Failure audio integration |
-| TASK-21 | [#21](https://github.com/Eaglegor/GaragePlaymate/issues/21) | Library service |
-| TASK-22 | [#22](https://github.com/Eaglegor/GaragePlaymate/issues/22) | Setlist CRUD |
-| TASK-23 | [#23](https://github.com/Eaglegor/GaragePlaymate/issues/23) | Settings service |
-| TASK-24 | [#24](https://github.com/Eaglegor/GaragePlaymate/issues/24) | Library UI |
-| TASK-25 | [#25](https://github.com/Eaglegor/GaragePlaymate/issues/25) | Song detail UI |
-| TASK-26 | [#26](https://github.com/Eaglegor/GaragePlaymate/issues/26) | Session bar UI |
-| TASK-27 | [#27](https://github.com/Eaglegor/GaragePlaymate/issues/27) | History panel UI |
-| TASK-28 | [#28](https://github.com/Eaglegor/GaragePlaymate/issues/28) | Settings UI |
-| TASK-29 | [#29](https://github.com/Eaglegor/GaragePlaymate/issues/29) | Keyboard shortcuts |
-| TASK-30 | [#30](https://github.com/Eaglegor/GaragePlaymate/issues/30) | Sample song fixtures |
-| TASK-31 | [#31](https://github.com/Eaglegor/GaragePlaymate/issues/31) | Core unit tests |
-| TASK-32 | [#32](https://github.com/Eaglegor/GaragePlaymate/issues/32) | Packaging (portable + installer) |
-| TASK-33 | [#33](https://github.com/Eaglegor/GaragePlaymate/issues/33) | Mute/solo (optional) |
+| Task | Spec | Issue | Summary |
+|------|------|-------|---------|
+| TASK_01 | [TASK_01_cmake_juce_scaffold.md](tasks/TASK_01_cmake_juce_scaffold.md) | [#3](https://github.com/Eaglegor/GaragePlaymate/issues/3) | CMake + JUCE scaffold |
+| TASK_02 | [TASK_02_license_notice_readme.md](tasks/TASK_02_license_notice_readme.md) | [#2](https://github.com/Eaglegor/GaragePlaymate/issues/2) | LICENSE, NOTICE, README |
+| TASK_03 | [TASK_03_application_shell.md](tasks/TASK_03_application_shell.md) | [#1](https://github.com/Eaglegor/GaragePlaymate/issues/1) | Application shell |
+| TASK_04 | [TASK_04_core_domain_types.md](tasks/TASK_04_core_domain_types.md) | [#4](https://github.com/Eaglegor/GaragePlaymate/issues/4) | Core domain types |
+| TASK_05 | [TASK_05_song_yaml_parser.md](tasks/TASK_05_song_yaml_parser.md) | [#5](https://github.com/Eaglegor/GaragePlaymate/issues/5) | Song YAML parser |
+| TASK_06 | [TASK_06_song_folder_scanner.md](tasks/TASK_06_song_folder_scanner.md) | [#6](https://github.com/Eaglegor/GaragePlaymate/issues/6) | Song folder scanner |
+| TASK_07 | [TASK_07_sqlite_schema_migrations.md](tasks/TASK_07_sqlite_schema_migrations.md) | [#7](https://github.com/Eaglegor/GaragePlaymate/issues/7) | SQLite schema + store |
+| TASK_08 | [TASK_08_data_path_resolver.md](tasks/TASK_08_data_path_resolver.md) | [#8](https://github.com/Eaglegor/GaragePlaymate/issues/8) | Data path resolver |
+| TASK_09 | [TASK_09_audio_device_service.md](tasks/TASK_09_audio_device_service.md) | [#9](https://github.com/Eaglegor/GaragePlaymate/issues/9) | Audio device service |
+| TASK_10 | [TASK_10_streaming_track_source.md](tasks/TASK_10_streaming_track_source.md) | [#10](https://github.com/Eaglegor/GaragePlaymate/issues/10) | Streaming track source |
+| TASK_11 | [TASK_11_preloaded_track_source.md](tasks/TASK_11_preloaded_track_source.md) | [#11](https://github.com/Eaglegor/GaragePlaymate/issues/11) | Preloaded track source |
+| TASK_12 | [TASK_12_multitrack_mixer_engine.md](tasks/TASK_12_multitrack_mixer_engine.md) | [#12](https://github.com/Eaglegor/GaragePlaymate/issues/12) | Multitrack mixer engine |
+| TASK_13 | [TASK_13_transport_controller.md](tasks/TASK_13_transport_controller.md) | [#13](https://github.com/Eaglegor/GaragePlaymate/issues/13) | Transport controller |
+| TASK_14 | [TASK_14_section_navigator.md](tasks/TASK_14_section_navigator.md) | [#14](https://github.com/Eaglegor/GaragePlaymate/issues/14) | Section navigator |
+| TASK_15 | [TASK_15_section_seek_integration.md](tasks/TASK_15_section_seek_integration.md) | [#15](https://github.com/Eaglegor/GaragePlaymate/issues/15) | Section seek integration |
+| TASK_16 | [TASK_16_random_take_selector.md](tasks/TASK_16_random_take_selector.md) | [#16](https://github.com/Eaglegor/GaragePlaymate/issues/16) | Random take selector |
+| TASK_17 | [TASK_17_session_persistence.md](tasks/TASK_17_session_persistence.md) | [#17](https://github.com/Eaglegor/GaragePlaymate/issues/17) | Session persistence |
+| TASK_18 | [TASK_18_playback_service_orchestration.md](tasks/TASK_18_playback_service_orchestration.md) | [#18](https://github.com/Eaglegor/GaragePlaymate/issues/18) | Playback service orchestration |
+| TASK_19 | [TASK_19_failure_simulator_core.md](tasks/TASK_19_failure_simulator_core.md) | [#19](https://github.com/Eaglegor/GaragePlaymate/issues/19) | Failure simulator core |
+| TASK_20 | [TASK_20_failure_audio_integration.md](tasks/TASK_20_failure_audio_integration.md) | [#20](https://github.com/Eaglegor/GaragePlaymate/issues/20) | Failure audio integration |
+| TASK_21 | [TASK_21_library_service.md](tasks/TASK_21_library_service.md) | [#21](https://github.com/Eaglegor/GaragePlaymate/issues/21) | Library service |
+| TASK_22 | [TASK_22_setlist_crud.md](tasks/TASK_22_setlist_crud.md) | [#22](https://github.com/Eaglegor/GaragePlaymate/issues/22) | Setlist CRUD |
+| TASK_23 | [TASK_23_settings_service.md](tasks/TASK_23_settings_service.md) | [#23](https://github.com/Eaglegor/GaragePlaymate/issues/23) | Settings service |
+| TASK_24 | [TASK_24_library_ui.md](tasks/TASK_24_library_ui.md) | [#24](https://github.com/Eaglegor/GaragePlaymate/issues/24) | Library UI |
+| TASK_25 | [TASK_25_song_detail_ui.md](tasks/TASK_25_song_detail_ui.md) | [#25](https://github.com/Eaglegor/GaragePlaymate/issues/25) | Song detail UI |
+| TASK_26 | [TASK_26_session_bar_ui.md](tasks/TASK_26_session_bar_ui.md) | [#26](https://github.com/Eaglegor/GaragePlaymate/issues/26) | Session bar UI |
+| TASK_27 | [TASK_27_history_panel_ui.md](tasks/TASK_27_history_panel_ui.md) | [#27](https://github.com/Eaglegor/GaragePlaymate/issues/27) | History panel UI |
+| TASK_28 | [TASK_28_settings_ui.md](tasks/TASK_28_settings_ui.md) | [#28](https://github.com/Eaglegor/GaragePlaymate/issues/28) | Settings UI |
+| TASK_29 | [TASK_29_keyboard_shortcuts.md](tasks/TASK_29_keyboard_shortcuts.md) | [#29](https://github.com/Eaglegor/GaragePlaymate/issues/29) | Keyboard shortcuts |
+| TASK_30 | [TASK_30_sample_song_fixtures.md](tasks/TASK_30_sample_song_fixtures.md) | [#30](https://github.com/Eaglegor/GaragePlaymate/issues/30) | Sample song fixtures |
+| TASK_31 | [TASK_31_core_unit_tests.md](tasks/TASK_31_core_unit_tests.md) | [#31](https://github.com/Eaglegor/GaragePlaymate/issues/31) | Core unit tests |
+| TASK_32 | [TASK_32_packaging_portable_installer.md](tasks/TASK_32_packaging_portable_installer.md) | [#32](https://github.com/Eaglegor/GaragePlaymate/issues/32) | Packaging (portable + installer) |
+| TASK_33 | [TASK_33_mute_solo_controls.md](tasks/TASK_33_mute_solo_controls.md) | [#33](https://github.com/Eaglegor/GaragePlaymate/issues/33) | Mute/solo (optional) |
 
 ---
 
