@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <cstdint>
 #include <filesystem>
 #include <optional>
@@ -12,7 +11,6 @@ namespace garageplaymate {
 
 struct TakeFile {
     std::string filename;
-    std::filesystem::path absolutePath;
     int64_t durationMs = 0;
     bool disabled = false;
 };
@@ -48,26 +46,5 @@ struct SongSummary {
     int trackCount = 0;
     int totalTakeCount = 0;
 };
-
-inline int64_t songMaxTakeDurationMs(const Song& song) {
-    int64_t maxDuration = 0;
-    for (const auto& track : song.tracks) {
-        for (const auto& take : track.takes) {
-            maxDuration = std::max(maxDuration, take.durationMs);
-        }
-    }
-    return maxDuration;
-}
-
-inline const Section* findSectionAtMs(const Song& song, int64_t positionMs) {
-    const Section* current = nullptr;
-    for (const auto& section : song.sections) {
-        if (section.startMs > positionMs) {
-            break;
-        }
-        current = &section;
-    }
-    return current;
-}
 
 }  // namespace garageplaymate
