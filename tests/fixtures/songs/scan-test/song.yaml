@@ -1,0 +1,6 @@
+title: Scan Test Song
+bpm: 100
+sections:
+  - id: main
+    name: Main
+    startMs: 0
