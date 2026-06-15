@@ -28,10 +28,13 @@ juce_add_gui_app(GaragePlaymate
     NEEDS_MIDI_OUTPUT FALSE
 )
 
-# Stub main() until issue #1 (TASK-03) replaces it with START_JUCE_APPLICATION.
-set_target_properties(GaragePlaymate PROPERTIES WIN32_EXECUTABLE FALSE)
+target_include_directories(GaragePlaymate PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_sources(GaragePlaymate PRIVATE src/main.cpp)
+target_sources(GaragePlaymate PRIVATE
+    src/main.cpp
+    src/app/Application.cpp
+    src/ui/MainWindow.cpp
+)
 
 target_link_libraries(GaragePlaymate
     PRIVATE

@@ -1,4 +1,3 @@
-int main()
-{
-    return 0;
-}
+#include "app/Application.h"
+
+START_JUCE_APPLICATION(garageplaymate::GaragePlaymateApplication)
