@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-#include "storage/SongYamlParser.h"
+#include "storage/SongParser.h"
 
 #include <filesystem>
 
@@ -9,10 +9,6 @@ namespace {
 
 std::filesystem::path fixturesRoot() {
     return std::filesystem::path(TEST_FIXTURES_DIR) / "songs";
-}
-
-std::filesystem::path songYamlPath(const std::filesystem::path& songFolder) {
-    return songFolder / "song.yaml";
 }
 
 const garageplaymate::TrackDef* findTrack(const garageplaymate::Song& song, const std::string& id) {
@@ -26,18 +22,17 @@ const garageplaymate::TrackDef* findTrack(const garageplaymate::Song& song, cons
 
 }  // namespace
 
-TEST_CASE("parseSongYaml accepts a valid manifest", "[song_yaml_parser]") {
+TEST_CASE("parseSong accepts a valid manifest", "[song_parser]") {
     const auto songFolder = fixturesRoot() / "valid-song";
-    const garageplaymate::Song song =
-        garageplaymate::parseSongYaml(songYamlPath(songFolder), songFolder);
+    const garageplaymate::Song song = garageplaymate::parseSong(songFolder).song;
 
     CHECK(song.id == "valid-song");
     CHECK(song.title == "Valid Test Song");
     CHECK(song.bpm.has_value());
     CHECK(song.bpm.value() == 120);
     REQUIRE(song.timeSignature.has_value());
-    CHECK(song.timeSignature->first == 4);
-    CHECK(song.timeSignature->second == 4);
+    CHECK(song.timeSignature.value().first == 4);
+    CHECK(song.timeSignature.value().second == 4);
     CHECK(song.folderPath == songFolder);
 
     REQUIRE(song.tracks.size() == 2);
@@ -63,16 +58,15 @@ TEST_CASE("parseSongYaml accepts a valid manifest", "[song_yaml_parser]") {
     CHECK(song.sections[2].startMs == 30000);
 }
 
-TEST_CASE("parseSongYaml rejects a manifest without title", "[song_yaml_parser]") {
+TEST_CASE("parseSong rejects a manifest without title", "[song_parser]") {
     const auto songFolder = fixturesRoot() / "missing-title";
 
-    REQUIRE_THROWS_WITH(garageplaymate::parseSongYaml(songYamlPath(songFolder), songFolder),
-                        Catch::Matchers::ContainsSubstring("title"));
+    REQUIRE_THROWS_WITH(garageplaymate::parseSong(songFolder), Catch::Matchers::ContainsSubstring("title"));
 }
 
-TEST_CASE("parseSongYaml rejects duplicate section ids", "[song_yaml_parser]") {
+TEST_CASE("parseSong rejects duplicate section ids", "[song_parser]") {
     const auto songFolder = fixturesRoot() / "duplicate-section";
 
-    REQUIRE_THROWS_WITH(garageplaymate::parseSongYaml(songYamlPath(songFolder), songFolder),
+    REQUIRE_THROWS_WITH(garageplaymate::parseSong(songFolder),
                         Catch::Matchers::ContainsSubstring("Duplicate section id: intro"));
 }

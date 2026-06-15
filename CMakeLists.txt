@@ -19,6 +19,7 @@ endforeach()
 
 include(cmake/FetchJuce.cmake)
 include(cmake/FetchYamlCpp.cmake)
+include(cmake/FetchDrWav.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
@@ -26,7 +27,7 @@ add_library(GaragePlaymateCore INTERFACE)
 target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_library(GaragePlaymateStorage STATIC
-    src/storage/SongYamlParser.cpp
+    src/storage/SongParser.cpp
     src/storage/WavMetadataReader.cpp
     src/storage/SongFolderScanner.cpp
 )
@@ -35,6 +36,7 @@ target_link_libraries(GaragePlaymateStorage
     PUBLIC
         GaragePlaymateCore
         yaml-cpp
+        dr_wav
 )
 garageplaymate_apply_warning_flags(GaragePlaymateStorage)
 

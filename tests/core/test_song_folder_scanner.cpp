@@ -48,10 +48,10 @@ TEST_CASE("readWavMetadata reads duration from a fixture WAV", "[song_folder_sca
 
     const std::optional<garageplaymate::WavMetadata> metadata = garageplaymate::readWavMetadata(wavPath);
     REQUIRE(metadata.has_value());
-    CHECK(metadata->sampleRate == 44100);
-    CHECK(metadata->channels == 1);
-    CHECK(metadata->bitsPerSample == 16);
-    CHECK(metadata->durationMs == 200);
+    CHECK(metadata.value().sampleRate == 44100);
+    CHECK(metadata.value().channels == 1);
+    CHECK(metadata.value().bitsPerSample == 16);
+    CHECK(metadata.value().durationMs == 200);
 }
 
 TEST_CASE("scanLibrary finds scan-test song with take counts and non-WAV warning", "[song_folder_scanner]") {

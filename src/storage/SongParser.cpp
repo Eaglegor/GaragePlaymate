@@ -1,8 +1,11 @@
-#include "storage/SongYamlParser.h"
+#include "storage/SongParser.h"
+
+#include "storage/WavMetadataReader.h"
 
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -17,7 +20,18 @@ namespace {
 }
 
 void logWarning(const std::string& message) {
-    std::cerr << "[SongYamlParser] " << message << '\n';
+    std::cerr << "[SongParser] " << message << '\n';
+}
+
+void addWarning(std::vector<ParseWarning>& warnings, const std::filesystem::path& path, std::string message) {
+    warnings.push_back(ParseWarning{path.string(), std::move(message)});
+}
+
+bool hasWavExtension(const std::filesystem::path& filePath) {
+    std::string extension = filePath.extension().string();
+    std::transform(extension.begin(), extension.end(), extension.begin(),
+                   [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
+    return extension == ".wav";
 }
 
 std::string requireScalar(const YAML::Node& node, const char* field) {
@@ -181,10 +195,71 @@ void parseSections(const YAML::Node& root, Song& song) {
               [](const Section& left, const Section& right) { return left.startMs < right.startMs; });
 }
 
-}  // namespace
+void enumerateTrackTakes(TrackDef& track, std::vector<ParseWarning>& warnings) {
+    std::vector<TakeFile> takes;
 
-Song parseSongYaml(const std::filesystem::path& songYamlPath,
-                   const std::filesystem::path& songFolderPath) {
+    std::error_code errorCode;
+    if (!std::filesystem::is_directory(track.folderPath, errorCode)) {
+        addWarning(warnings, track.folderPath, "Track folder is missing or unreadable");
+        track.takes = std::move(takes);
+        return;
+    }
+
+    std::error_code iterationError;
+    std::filesystem::directory_iterator iterator(track.folderPath, iterationError);
+    if (iterationError) {
+        addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
+        track.takes = std::move(takes);
+        return;
+    }
+
+    for (; iterator != std::filesystem::directory_iterator(); iterator.increment(iterationError)) {
+        if (iterationError) {
+            addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
+            break;
+        }
+
+        const std::filesystem::directory_entry& entry = *iterator;
+        if (!entry.is_regular_file(errorCode)) {
+            if (errorCode) {
+                addWarning(warnings, entry.path(), "Failed to inspect file: " + errorCode.message());
+                errorCode.clear();
+            }
+            continue;
+        }
+
+        if (!hasWavExtension(entry.path())) {
+            addWarning(warnings, entry.path(), "Ignoring non-WAV file");
+            continue;
+        }
+
+        TakeFile take;
+        take.filename = entry.path().filename().string();
+
+        std::string metadataError;
+        if (const std::optional<WavMetadata> metadata = readWavMetadata(entry.path(), &metadataError)) {
+            take.durationMs = metadata.value().durationMs;
+        } else {
+            addWarning(warnings, entry.path(), metadataError.empty() ? "Failed to read WAV metadata" : metadataError);
+            take.durationMs = 0;
+        }
+
+        takes.push_back(std::move(take));
+    }
+
+    std::sort(takes.begin(), takes.end(),
+              [](const TakeFile& left, const TakeFile& right) { return left.filename < right.filename; });
+    track.takes = std::move(takes);
+}
+
+void populateSongTakes(Song& song, std::vector<ParseWarning>& warnings) {
+    for (TrackDef& track : song.tracks) {
+        enumerateTrackTakes(track, warnings);
+    }
+}
+
+Song parseSongManifest(const std::filesystem::path& songYamlPath,
+                       const std::filesystem::path& songFolderPath) {
     const YAML::Node root = loadYamlFile(songYamlPath);
     if (!root.IsMap()) {
         throwParseError("song.yaml root must be a mapping");
@@ -208,6 +283,17 @@ Song parseSongYaml(const std::filesystem::path& songYamlPath,
     parseSections(root, song);
 
     return song;
+}
+
+}  // namespace
+
+SongParseResult parseSong(const std::filesystem::path& songFolderPath) {
+    const std::filesystem::path songYamlPath = songFolderPath / "song.yaml";
+
+    SongParseResult result;
+    result.song = parseSongManifest(songYamlPath, songFolderPath);
+    populateSongTakes(result.song, result.warnings);
+    return result;
 }
 
 }  // namespace garageplaymate
