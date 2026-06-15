@@ -21,6 +21,9 @@ include(cmake/FetchJuce.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
+add_library(GaragePlaymateCore INTERFACE)
+target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 juce_add_gui_app(GaragePlaymate
     PRODUCT_NAME "GaragePlaymate"
     COMPANY_NAME "GaragePlaymate"
@@ -38,6 +41,7 @@ target_sources(GaragePlaymate PRIVATE
 
 target_link_libraries(GaragePlaymate
     PRIVATE
+        GaragePlaymateCore
         juce::juce_core
         juce::juce_events
         juce::juce_data_structures
