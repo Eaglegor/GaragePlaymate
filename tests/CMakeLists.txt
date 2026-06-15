@@ -2,7 +2,7 @@ add_executable(GaragePlaymateTests
     core/test_song_yaml_parser.cpp
 )
 
-target_compile_features(GaragePlaymateTests PRIVATE cxx_std_23)
+target_compile_features(GaragePlaymateTests PRIVATE cxx_std_20)
 
 target_compile_definitions(GaragePlaymateTests
     PRIVATE
