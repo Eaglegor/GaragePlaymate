@@ -115,8 +115,9 @@ void parseTimeSignature(const YAML::Node& root, Song& song) {
     }
 }
 
-TrackDef parseTrackYaml(const std::filesystem::path& trackYamlPath,
-                        const std::filesystem::path& trackFolderPath) {
+TrackDef parseTrack(const std::filesystem::path& trackYamlPath,
+                    const std::filesystem::path& trackFolderPath,
+                    std::vector<ParseWarning>& warnings) {
     const YAML::Node root = loadYamlFile(trackYamlPath);
     if (!root.IsMap()) {
         throwParseError(trackYamlPath.string() + ": root must be a mapping");
@@ -129,10 +130,65 @@ TrackDef parseTrackYaml(const std::filesystem::path& trackYamlPath,
         track.defaultVolume = volume.value();
     }
     track.folderPath = trackFolderPath;
+
+    std::vector<TakeFile> takes;
+
+    std::error_code errorCode;
+    if (!std::filesystem::is_directory(track.folderPath, errorCode)) {
+        addWarning(warnings, track.folderPath, "Track folder is missing or unreadable");
+        track.takes = std::move(takes);
+        return track;
+    }
+
+    std::error_code iterationError;
+    std::filesystem::directory_iterator iterator(track.folderPath, iterationError);
+    if (iterationError) {
+        addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
+        track.takes = std::move(takes);
+        return track;
+    }
+
+    for (; iterator != std::filesystem::directory_iterator(); iterator.increment(iterationError)) {
+        if (iterationError) {
+            addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
+            break;
+        }
+
+        const std::filesystem::directory_entry& entry = *iterator;
+        if (!entry.is_regular_file(errorCode)) {
+            if (errorCode) {
+                addWarning(warnings, entry.path(), "Failed to inspect file: " + errorCode.message());
+                errorCode.clear();
+            }
+            continue;
+        }
+
+        if (!hasWavExtension(entry.path())) {
+            addWarning(warnings, entry.path(), "Ignoring non-WAV file");
+            continue;
+        }
+
+        TakeFile take;
+        take.filename = entry.path().filename().string();
+
+        std::string metadataError;
+        if (const std::optional<WavMetadata> metadata = readWavMetadata(entry.path(), &metadataError)) {
+            take.durationMs = metadata.value().durationMs;
+        } else {
+            addWarning(warnings, entry.path(), metadataError.empty() ? "Failed to read WAV metadata" : metadataError);
+            take.durationMs = 0;
+        }
+
+        takes.push_back(std::move(take));
+    }
+
+    std::sort(takes.begin(), takes.end(),
+              [](const TakeFile& left, const TakeFile& right) { return left.filename < right.filename; });
+    track.takes = std::move(takes);
     return track;
 }
 
-void discoverTracks(const std::filesystem::path& songFolderPath, Song& song) {
+void discoverTracks(const std::filesystem::path& songFolderPath, Song& song, std::vector<ParseWarning>& warnings) {
     const std::filesystem::path tracksRoot = songFolderPath / "tracks";
     if (!std::filesystem::is_directory(tracksRoot)) {
         throwParseError("Missing tracks directory: " + tracksRoot.string());
@@ -150,7 +206,7 @@ void discoverTracks(const std::filesystem::path& songFolderPath, Song& song) {
             continue;
         }
 
-        tracks.push_back(parseTrackYaml(trackYamlPath, entry.path()));
+        tracks.push_back(parseTrack(trackYamlPath, entry.path(), warnings));
     }
 
     if (tracks.empty()) {
@@ -195,71 +251,9 @@ void parseSections(const YAML::Node& root, Song& song) {
               [](const Section& left, const Section& right) { return left.startMs < right.startMs; });
 }
 
-void enumerateTrackTakes(TrackDef& track, std::vector<ParseWarning>& warnings) {
-    std::vector<TakeFile> takes;
-
-    std::error_code errorCode;
-    if (!std::filesystem::is_directory(track.folderPath, errorCode)) {
-        addWarning(warnings, track.folderPath, "Track folder is missing or unreadable");
-        track.takes = std::move(takes);
-        return;
-    }
-
-    std::error_code iterationError;
-    std::filesystem::directory_iterator iterator(track.folderPath, iterationError);
-    if (iterationError) {
-        addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
-        track.takes = std::move(takes);
-        return;
-    }
-
-    for (; iterator != std::filesystem::directory_iterator(); iterator.increment(iterationError)) {
-        if (iterationError) {
-            addWarning(warnings, track.folderPath, "Failed to read track folder: " + iterationError.message());
-            break;
-        }
-
-        const std::filesystem::directory_entry& entry = *iterator;
-        if (!entry.is_regular_file(errorCode)) {
-            if (errorCode) {
-                addWarning(warnings, entry.path(), "Failed to inspect file: " + errorCode.message());
-                errorCode.clear();
-            }
-            continue;
-        }
-
-        if (!hasWavExtension(entry.path())) {
-            addWarning(warnings, entry.path(), "Ignoring non-WAV file");
-            continue;
-        }
-
-        TakeFile take;
-        take.filename = entry.path().filename().string();
-
-        std::string metadataError;
-        if (const std::optional<WavMetadata> metadata = readWavMetadata(entry.path(), &metadataError)) {
-            take.durationMs = metadata.value().durationMs;
-        } else {
-            addWarning(warnings, entry.path(), metadataError.empty() ? "Failed to read WAV metadata" : metadataError);
-            take.durationMs = 0;
-        }
-
-        takes.push_back(std::move(take));
-    }
-
-    std::sort(takes.begin(), takes.end(),
-              [](const TakeFile& left, const TakeFile& right) { return left.filename < right.filename; });
-    track.takes = std::move(takes);
-}
-
-void populateSongTakes(Song& song, std::vector<ParseWarning>& warnings) {
-    for (TrackDef& track : song.tracks) {
-        enumerateTrackTakes(track, warnings);
-    }
-}
-
 Song parseSongManifest(const std::filesystem::path& songYamlPath,
-                       const std::filesystem::path& songFolderPath) {
+                       const std::filesystem::path& songFolderPath,
+                       std::vector<ParseWarning>& warnings) {
     const YAML::Node root = loadYamlFile(songYamlPath);
     if (!root.IsMap()) {
         throwParseError("song.yaml root must be a mapping");
@@ -279,7 +273,7 @@ Song parseSongManifest(const std::filesystem::path& songYamlPath,
     }
 
     parseTimeSignature(root, song);
-    discoverTracks(songFolderPath, song);
+    discoverTracks(songFolderPath, song, warnings);
     parseSections(root, song);
 
     return song;
@@ -291,8 +285,7 @@ SongParseResult parseSong(const std::filesystem::path& songFolderPath) {
     const std::filesystem::path songYamlPath = songFolderPath / "song.yaml";
 
     SongParseResult result;
-    result.song = parseSongManifest(songYamlPath, songFolderPath);
-    populateSongTakes(result.song, result.warnings);
+    result.song = parseSongManifest(songYamlPath, songFolderPath, result.warnings);
     return result;
 }
 
