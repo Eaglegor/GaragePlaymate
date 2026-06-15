@@ -13,10 +13,9 @@ MainWindow::MainWindow()
     setResizable(true, true);
     setResizeLimits(800, 600, 4096, 2160);
 
-    auto* placeholder = new juce::Label();
-    placeholder->setText("GaragePlaymate — UI coming soon", juce::dontSendNotification);
-    placeholder->setJustificationType(juce::Justification::centred);
-    setContentOwned(placeholder, true);
+    placeholderLabel_.setText("GaragePlaymate — UI coming soon", juce::dontSendNotification);
+    placeholderLabel_.setJustificationType(juce::Justification::centred);
+    setContentNonOwned(&placeholderLabel_, false);
 
     centreWithSize(1280, 800);
     setMenuBar(this);

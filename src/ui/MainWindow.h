@@ -26,6 +26,8 @@ private:
         exitMenuItem = 1,
         aboutMenuItem = 2,
     };
+
+    juce::Label placeholderLabel_;
 };
 
 } // namespace garageplaymate
