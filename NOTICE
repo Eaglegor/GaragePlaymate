@@ -30,23 +30,36 @@ yaml-cpp
 --------
 Copyright (c) Jesse B. Bitter and yaml-cpp contributors.
 
-Licensed under the MIT License. yaml-cpp will be integrated in a later task
-for parsing song manifest files.
+Licensed under the MIT License. Used to parse song manifest files
+(song.yaml, track.yaml). Fetched at build time via CMake FetchContent.
 
   https://github.com/jbeder/yaml-cpp
 
 SQLite
 ------
-SQLite is in the public domain. SQLite will be integrated in a later task
-for application metadata (setlists, settings, session history).
+SQLite is in the public domain. Used for application metadata (setlists,
+settings, session history, disabled takes). The amalgamation is fetched at
+build time via CMake FetchContent from a GitHub mirror of the official
+sqlite.org release.
 
   https://sqlite.org/
+  https://github.com/rhuijben/sqlite-amalgamation
 
 Catch2
 ------
 Copyright (c) Catch2 contributors.
 
-Licensed under the Boost Software License 1.0 (BSL-1.0). Catch2 will be used
-for unit tests in a later task.
+Licensed under the Boost Software License 1.0 (BSL-1.0). Used for unit tests
+only; not linked into the application.
 
   https://github.com/catchorg/Catch2
+
+dr_wav (dr_libs)
+----------------
+Copyright (c) David Reid.
+
+Dual-licensed under the public domain (Unlicense) and MIT-0. Used to read WAV
+header metadata during library scans. Fetched at build time via CMake
+FetchContent.
+
+  https://github.com/mackron/dr_libs

@@ -1,6 +1,6 @@
 # GaragePlaymate
 
-> **Under development.** GaragePlaymate is not yet ready for end users. The repository currently contains an early CMake/JUCE scaffold; features described in the product docs are planned but not implemented.
+> **Under development.** GaragePlaymate is not yet ready for end users. Core features described in the product docs are being implemented; see the [task index](docs/tasks/README.md) for progress.
 
 GaragePlaymate is a Windows desktop multitrack practice player for recreational band members. Each playback session randomly selects one pre-recorded take per instrument, optionally simulates a technical failure (a track drops until the next song section), and records playback history for replay. See [docs/PRODUCT_DESIGN.md](docs/PRODUCT_DESIGN.md) for the full product specification and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for system design and implementation guidance.
 
@@ -37,7 +37,7 @@ Other configurations use the same layout, for example `build/bin/Debug/GaragePla
 |--------|---------|-------------|
 | `GARAGEPLAYMATE_PORTABLE_BUILD` | `OFF` | When `ON`, the default data root is `{exe_dir}/data/` (portable distribution). |
 | `GARAGEPLAYMATE_ENABLE_ASIO` | `ON` | Enable ASIO audio driver support (requires Steinberg ASIO SDK at configure time). |
-| `GARAGEPLAYMATE_BUILD_TESTS` | `ON` | Build unit tests (Catch2 integration planned in a later task). |
+| `GARAGEPLAYMATE_BUILD_TESTS` | `ON` | Build Catch2 unit tests (`GaragePlaymateTests`); run them with `ctest --test-dir build -C Release`. |
 
 Example — portable, WASAPI-only configure:
 
@@ -56,7 +56,7 @@ After a Release build:
 .\build\bin\Release\GaragePlaymate.exe
 ```
 
-The current scaffold exits immediately (placeholder `main()` until the application shell is implemented).
+The app currently opens an empty main window; library and playback features are being added task by task (see [docs/tasks](docs/tasks/README.md)).
 
 ## Song data
 
@@ -69,7 +69,9 @@ Default data root (before user override):
 | Portable (`GARAGEPLAYMATE_PORTABLE_BUILD=ON`) | `{exe_dir}/data/` |
 | Installed (default) | `%USERPROFILE%/Documents/GaragePlaymate/` |
 
-Full path resolution is implemented in a later task; see [Product Design §6.7](docs/PRODUCT_DESIGN.md#67-settings-and-distribution-modes).
+The data root can be overridden in Settings (for example to a OneDrive folder); see [Product Design §6.7](docs/PRODUCT_DESIGN.md#67-settings-and-distribution-modes).
+
+App metadata — setlists, settings, playback history and disabled takes — is stored in a SQLite database at `{data root}/garageplaymate.db`, next to the `songs/` folder, so a portable install or a synced data folder carries its history along. Song folders themselves are never modified.
 
 ## Platform scope
 

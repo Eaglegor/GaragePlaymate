@@ -1,6 +1,8 @@
 add_executable(GaragePlaymateTests
     core/test_song_yaml_parser.cpp
     core/test_song_folder_scanner.cpp
+    core/test_sqlite_store.cpp
+    core/test_data_path_resolver.cpp
 )
 
 target_compile_features(GaragePlaymateTests PRIVATE cxx_std_20)

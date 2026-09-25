@@ -219,7 +219,9 @@ Compile-time flag: `GARAGEPLAYMATE_PORTABLE_BUILD`
 Effective root: `settings.dataRootOverride.value_or(defaultRoot)`  
 Songs scanned at: `{effectiveRoot}/songs/{song-id}/`
 
-User config DB location: `{effectiveRoot}/garageplaymate.db` (or `%APPDATA%/GaragePlaymate/garageplaymate.db` — pick one and document in README; recommend co-located with data root for portable simplicity).
+User config DB location: `{effectiveRoot}/garageplaymate.db` (decided: co-located with the data root for portable simplicity; documented in README).
+
+The storage layer has no JUCE dependency: the app layer passes the executable path and Documents folder in a `PlatformPaths` struct.
 
 ---
 
