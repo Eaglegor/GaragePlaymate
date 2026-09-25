@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 # GaragePlaymate is licensed under GPL-3.0; see LICENSE and NOTICE at repo root.
-project(GaragePlaymate VERSION 0.1.0 LANGUAGES CXX)
+project(GaragePlaymate VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,23 +20,42 @@ endforeach()
 include(cmake/FetchJuce.cmake)
 include(cmake/FetchYamlCpp.cmake)
 include(cmake/FetchDrWav.cmake)
+include(cmake/FetchSQLite.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
 add_library(GaragePlaymateCore INTERFACE)
 target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+set(GARAGEPLAYMATE_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
+add_custom_command(
+    OUTPUT ${GARAGEPLAYMATE_GENERATED_DIR}/SchemaSql.h
+    COMMAND ${CMAKE_COMMAND}
+        -DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/src/storage/Schema.sql
+        -DOUTPUT=${GARAGEPLAYMATE_GENERATED_DIR}/SchemaSql.h
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/EmbedSchema.cmake
+    DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/storage/Schema.sql
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/EmbedSchema.cmake
+    COMMENT "Embedding Schema.sql"
+)
+
 add_library(GaragePlaymateStorage STATIC
     src/storage/SongParser.cpp
     src/storage/WavMetadataReader.cpp
     src/storage/SongFolderScanner.cpp
+    src/storage/SQLiteStore.cpp
+    ${GARAGEPLAYMATE_GENERATED_DIR}/SchemaSql.h
 )
 target_compile_features(GaragePlaymateStorage PUBLIC cxx_std_20)
+target_include_directories(GaragePlaymateStorage PRIVATE ${GARAGEPLAYMATE_GENERATED_DIR})
 target_link_libraries(GaragePlaymateStorage
     PUBLIC
         GaragePlaymateCore
         yaml-cpp
         dr_wav
+    PRIVATE
+        sqlite3
 )
 garageplaymate_apply_warning_flags(GaragePlaymateStorage)
 
