@@ -72,6 +72,7 @@ set(GARAGEPLAYMATE_AUDIO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/TrackSourceBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/StreamingTrackSource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/PreloadedTrackSource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/MultitrackMixerEngine.cpp
 )
 
 set(GARAGEPLAYMATE_JUCE_DEFINITIONS

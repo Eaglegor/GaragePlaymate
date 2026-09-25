@@ -36,6 +36,7 @@ target_sources(GaragePlaymateAudioTests
         audio/test_audio_device_service.cpp
         audio/test_streaming_track_source.cpp
         audio/test_preloaded_track_source.cpp
+        audio/test_multitrack_mixer_engine.cpp
         ${GARAGEPLAYMATE_AUDIO_SOURCES}
 )
 
