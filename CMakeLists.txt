@@ -69,6 +69,8 @@ garageplaymate_apply_warning_flags(GaragePlaymateStorage)
 # sources propagate through linking and would otherwise be compiled twice.
 set(GARAGEPLAYMATE_AUDIO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/AudioDeviceService.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/TrackSourceBase.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/StreamingTrackSource.cpp
 )
 
 set(GARAGEPLAYMATE_JUCE_DEFINITIONS
