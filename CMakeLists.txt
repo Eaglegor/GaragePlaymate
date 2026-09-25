@@ -45,10 +45,15 @@ add_library(GaragePlaymateStorage STATIC
     src/storage/WavMetadataReader.cpp
     src/storage/SongFolderScanner.cpp
     src/storage/SQLiteStore.cpp
+    src/storage/DataPathResolver.cpp
     ${GARAGEPLAYMATE_GENERATED_DIR}/SchemaSql.h
 )
 target_compile_features(GaragePlaymateStorage PUBLIC cxx_std_20)
 target_include_directories(GaragePlaymateStorage PRIVATE ${GARAGEPLAYMATE_GENERATED_DIR})
+target_compile_definitions(GaragePlaymateStorage
+    PRIVATE
+        GARAGEPLAYMATE_PORTABLE_BUILD=$<BOOL:${GARAGEPLAYMATE_PORTABLE_BUILD}>
+)
 target_link_libraries(GaragePlaymateStorage
     PUBLIC
         GaragePlaymateCore
