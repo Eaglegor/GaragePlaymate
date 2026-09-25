@@ -1,12 +1,18 @@
 #include "audio/TransportController.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace garageplaymate {
 
 TransportController::TransportController() = default;
 
 TransportController::~TransportController() {
+    // Stop without notifying: the owners of these callbacks may already be gone.
+    onStateChanged = nullptr;
+    onPositionChanged = nullptr;
+    onReachedEnd = nullptr;
+    onStop = nullptr;
     detach();
 }
 
@@ -112,6 +118,47 @@ void TransportController::seekToSample(int64_t samplePos) {
     notifyPosition();
 }
 
+void TransportController::seekToSectionMs(int64_t startMs) {
+    seekToSample(msToSamples(startMs));
+}
+
+bool TransportController::seekToSectionId(const std::string& sectionId, const SectionNavigator& navigator) {
+    const std::optional<int64_t> startMs = navigator.getStartMsForSection(sectionId);
+    if (!startMs.has_value()) {
+        return false;
+    }
+    seekToSectionMs(startMs.value());
+    return true;
+}
+
+void TransportController::seekToNextSection(const SectionNavigator& navigator) {
+    const std::optional<Section> next = navigator.getNextSection(getPositionMs());
+    if (next.has_value() && next.value().startMs < getDurationMs()) {
+        seekToSectionMs(next.value().startMs);
+    }
+}
+
+void TransportController::seekToPreviousSection(const SectionNavigator& navigator) {
+    const int64_t positionMs = getPositionMs();
+    const Section* current = navigator.getCurrentSection(positionMs);
+    if (current == nullptr) {
+        seekToSectionMs(0);
+        return;
+    }
+
+    if (positionMs - current->startMs > kRestartSectionThresholdMs) {
+        seekToSectionMs(current->startMs);
+        return;
+    }
+
+    const std::optional<Section> previous = navigator.getPreviousSection(positionMs);
+    if (previous.has_value()) {
+        seekToSectionMs(previous.value().startMs);
+    } else {
+        seekToSectionMs(positionMs > current->startMs ? current->startMs : 0);
+    }
+}
+
 void TransportController::update() {
     if (engine_ == nullptr || state_ == TransportState::Stopped) {
         return;
@@ -144,6 +191,10 @@ void TransportController::notifyPosition() {
     if (onPositionChanged) {
         onPositionChanged(getPositionSamples(), getDurationSamples());
     }
+}
+
+int64_t TransportController::msToSamples(int64_t ms) const {
+    return static_cast<int64_t>(std::llround(static_cast<double>(ms) * getSampleRate() / 1000.0));
 }
 
 int64_t TransportController::samplesToMs(int64_t samples) const {

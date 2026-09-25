@@ -158,3 +158,78 @@ TEST_CASE("Transport play fails cleanly without a device or tracks", "[transport
         CHECK(transport.getState() == TransportState::Stopped);
     }
 }
+
+namespace {
+
+// 10 s session at 48 kHz with sections at 0, 3 s and 6 s.
+struct SectionFixture : TransportFixture {
+    garageplaymate::SectionNavigator navigator{{
+        garageplaymate::Section{"intro", "Intro", 0},
+        garageplaymate::Section{"verse", "Verse", 3000},
+        garageplaymate::Section{"chorus", "Chorus", 6000},
+    }};
+
+    SectionFixture() : TransportFixture({480000, 480000}) {}
+};
+
+}  // namespace
+
+TEST_CASE("Transport seeks to a section start in samples", "[transport][sections]") {
+    SectionFixture fixture;
+    auto& transport = fixture.transport;
+    REQUIRE(transport.play());
+
+    CHECK(transport.seekToSectionId("verse", fixture.navigator));
+    CHECK(transport.getPositionSamples() == 144000);
+    CHECK(fixture.lastPosition == 144000);
+    CHECK_FALSE(transport.seekToSectionId("bridge", fixture.navigator));
+
+    fixture.output.pump(1);
+    CHECK(transport.getPositionSamples() == 144256);
+}
+
+TEST_CASE("Transport next and previous section navigation", "[transport][sections]") {
+    SectionFixture fixture;
+    auto& transport = fixture.transport;
+    REQUIRE(transport.play());
+
+    transport.seekToSample(48000 * 4);  // 4 s, in verse
+    transport.seekToNextSection(fixture.navigator);
+    CHECK(transport.getPositionMs() == 6000);
+
+    transport.seekToNextSection(fixture.navigator);  // already in last section
+    CHECK(transport.getPositionMs() == 6000);
+
+    transport.seekToSample(48000 * 7);  // 1 s into chorus → previous section
+    transport.seekToPreviousSection(fixture.navigator);
+    CHECK(transport.getPositionMs() == 3000);
+
+    transport.seekToSample(48000 * 5 + 24000);  // 2.5 s into verse → restart verse
+    transport.seekToPreviousSection(fixture.navigator);
+    CHECK(transport.getPositionMs() == 3000);
+
+    transport.seekToPreviousSection(fixture.navigator);  // at verse start → intro
+    CHECK(transport.getPositionMs() == 0);
+
+    transport.seekToPreviousSection(fixture.navigator);  // first section stays at 0
+    CHECK(transport.getPositionMs() == 0);
+}
+
+TEST_CASE("Transport section seek while paused keeps the transport paused", "[transport][sections]") {
+    SectionFixture fixture;
+    auto& transport = fixture.transport;
+    REQUIRE(transport.play());
+    transport.pause();
+
+    transport.seekToSectionMs(6000);
+    CHECK(transport.getState() == TransportState::Paused);
+    CHECK(transport.getPositionSamples() == 288000);
+    fixture.output.pump(2);
+    CHECK(transport.getPositionSamples() == 288000);
+}
+
+TEST_CASE("Transport section seek is ignored while stopped", "[transport][sections]") {
+    SectionFixture fixture;
+    fixture.transport.seekToSectionMs(3000);
+    CHECK(fixture.transport.getPositionSamples() == 0);
+}
