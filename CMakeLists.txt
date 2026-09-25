@@ -24,8 +24,12 @@ include(cmake/FetchSQLite.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
-add_library(GaragePlaymateCore INTERFACE)
-target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_library(GaragePlaymateCore STATIC
+    src/core/SectionNavigator.cpp
+)
+target_compile_features(GaragePlaymateCore PUBLIC cxx_std_20)
+target_include_directories(GaragePlaymateCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+garageplaymate_apply_warning_flags(GaragePlaymateCore)
 
 set(GARAGEPLAYMATE_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
 add_custom_command(
@@ -64,6 +68,23 @@ target_link_libraries(GaragePlaymateStorage
 )
 garageplaymate_apply_warning_flags(GaragePlaymateStorage)
 
+# Audio layer sources use JUCE audio modules. They are compiled into each JUCE
+# target (app, audio tests) rather than a static library, because JUCE module
+# sources propagate through linking and would otherwise be compiled twice.
+set(GARAGEPLAYMATE_AUDIO_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/AudioDeviceService.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/TrackSourceBase.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/StreamingTrackSource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/PreloadedTrackSource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/MultitrackMixerEngine.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio/TransportController.cpp
+)
+
+set(GARAGEPLAYMATE_JUCE_DEFINITIONS
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+)
+
 juce_add_gui_app(GaragePlaymate
     PRODUCT_NAME "GaragePlaymate"
     COMPANY_NAME "GaragePlaymate"
@@ -77,6 +98,7 @@ target_sources(GaragePlaymate PRIVATE
     src/main.cpp
     src/app/Application.cpp
     src/ui/MainWindow.cpp
+    ${GARAGEPLAYMATE_AUDIO_SOURCES}
 )
 
 target_link_libraries(GaragePlaymate
@@ -100,8 +122,7 @@ garageplaymate_apply_warning_flags(GaragePlaymate)
 
 target_compile_definitions(GaragePlaymate
     PRIVATE
-        JUCE_WEB_BROWSER=0
-        JUCE_USE_CURL=0
+        ${GARAGEPLAYMATE_JUCE_DEFINITIONS}
         GARAGEPLAYMATE_PORTABLE_BUILD=$<BOOL:${GARAGEPLAYMATE_PORTABLE_BUILD}>
 )
 

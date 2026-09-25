@@ -37,7 +37,7 @@ Other configurations use the same layout, for example `build/bin/Debug/GaragePla
 |--------|---------|-------------|
 | `GARAGEPLAYMATE_PORTABLE_BUILD` | `OFF` | When `ON`, the default data root is `{exe_dir}/data/` (portable distribution). |
 | `GARAGEPLAYMATE_ENABLE_ASIO` | `ON` | Enable ASIO audio driver support (requires Steinberg ASIO SDK at configure time). |
-| `GARAGEPLAYMATE_BUILD_TESTS` | `ON` | Build Catch2 unit tests (`GaragePlaymateTests`); run them with `ctest --test-dir build -C Release`. |
+| `GARAGEPLAYMATE_BUILD_TESTS` | `ON` | Build Catch2 unit tests: `GaragePlaymateTests` (core/storage) and `GaragePlaymateAudioTests` (audio engine, JUCE). Run them with `ctest --test-dir build -C Release`. |
 
 Example — portable, WASAPI-only configure:
 

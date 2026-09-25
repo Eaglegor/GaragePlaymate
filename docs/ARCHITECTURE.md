@@ -326,6 +326,12 @@ States: `Stopped`, `Playing`, `Paused`
 Operations: `play()`, `pause()`, `stop()`, `seekToMs(int64_t)`  
 Emits position callbacks on message thread (timer or `AsyncUpdater`, not from audio thread directly).
 
+Implementation notes (TASK_13/15):
+- The transport drives the device through `IAudioOutput` (implemented by `AudioDeviceService`), so tests can use a fake device.
+- Section seeks: `seekToSectionMs/Id`, `seekToNextSection`, `seekToPreviousSection` (restarts the current section when more than 2 s into it, otherwise goes to the previous one).
+- Seeks during playback are applied by the mixer at the start of the next audio block for all tracks at once.
+- Takes whose sample rate differs from the device are resampled per track in `MultitrackMixerEngine`.
+
 ### 9.5 `AudioDeviceService`
 
 - Wraps `juce::AudioDeviceManager`
