@@ -24,8 +24,12 @@ include(cmake/FetchSQLite.cmake)
 include(cmake/CompilerWarnings.cmake)
 include(cmake/AsioSdk.cmake)
 
-add_library(GaragePlaymateCore INTERFACE)
-target_include_directories(GaragePlaymateCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_library(GaragePlaymateCore STATIC
+    src/core/SectionNavigator.cpp
+)
+target_compile_features(GaragePlaymateCore PUBLIC cxx_std_20)
+target_include_directories(GaragePlaymateCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+garageplaymate_apply_warning_flags(GaragePlaymateCore)
 
 set(GARAGEPLAYMATE_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
 add_custom_command(
